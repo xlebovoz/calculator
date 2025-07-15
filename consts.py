@@ -1,0 +1,7 @@
+W = 690
+H = 950
+main_font = 26
+last_font = 10
+max_len = 17
+min_text_size = 22
+max_text_size = 26

@@ -1,51 +1,20 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect
-from PyQt5.QtGui import QFont, QIcon, QColor
+from PyQt5.QtGui import QFont, QIcon
+from consts import *
 import func
 
-W = 690
-H = 950
-main_font = 26
-last_font = 10
-max_len = 17
-min_text_size = 22
-max_text_size = 26
 
 app = QApplication([])
 main_win = QWidget()
 main_win.setWindowTitle('calculator')
-icon = QIcon('img/img-title.png')
-main_win.setWindowIcon(icon)
+ICON = QIcon('img/img-title.png')
+main_win.setWindowIcon(ICON)
 main_win.setFixedSize(W, H)
 
-# Вставляем стили прямо сюда вместо чтения из файла style.qss
-style_sheet = """
-QWidget {
-    background-color: #e8e8e8;
-}
 
-QPushButton {
-    background-color: #f8f8f8;
-    color: black;
-    border: none;
-    border-radius: 10%;
-    font-size: 26px;
-}
-QPushButton:hover {
-    background-color: #f2f2f2;
-}
-
-#myButton {
-    background-color: #2786c5;
-    color: black;
-    border: none;
-    border-radius: 10%;
-    font-size: 26px;
-}
-#myButton:hover {
-    background-color: #2c8fd1;
-}
-"""
+with open('main.qss', 'r', encoding='utf-8') as f:
+    style_sheet = f.read()
 
 app.setStyleSheet(style_sheet)
 
@@ -92,13 +61,13 @@ divide.setFixedSize(150, 105)
 equals = QPushButton('=')
 equals.setFixedSize(150, 105)
 equals.setObjectName("myButton")
-# Удаляем повторное чтение файла style.qss и используем стиль из строки выше
+
 
 delite = QPushButton('←')
 delite.setFixedSize(150, 105)
-c_button = QPushButton('C')   # переименовал переменную чтобы не пересекалась с ключевым словом c
+c_button = QPushButton('C')
 c_button.setFixedSize(150, 105)
-ce_button = QPushButton('CE') # тоже переименовал для ясности
+ce_button = QPushButton('CE')
 ce_button.setFixedSize(150, 105)
 
 btn_comma = QPushButton('.')
