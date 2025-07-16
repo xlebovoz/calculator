@@ -5,3 +5,5 @@ last_font = 10
 max_len = 17
 min_text_size = 22
 max_text_size = 26
+B_W = 150
+B_H = 105

@@ -1,4 +1,3 @@
-
 def button_click(current_text, number):
     if current_text == '0':
         return str(number)

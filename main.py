@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect
+from PyQt5.QtCore import Qt, QSize, QPoint
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QScrollArea, QListWidgetItem, QListWidget
 from PyQt5.QtGui import QFont, QIcon
 from consts import *
 import func
@@ -29,51 +29,126 @@ main_txt.setFont(font1)
 last_txt.setFont(font2)
 
 btn1 = QPushButton('1')
-btn1.setFixedSize(150, 105)
+btn1.setFixedSize(B_W, B_H)
 btn2 = QPushButton('2')
-btn2.setFixedSize(150, 105)
+btn2.setFixedSize(B_W, B_H)
 btn3 = QPushButton('3')
-btn3.setFixedSize(150, 105)
+btn3.setFixedSize(B_W, B_H)
 btn4 = QPushButton('4')
-btn4.setFixedSize(150, 105)
+btn4.setFixedSize(B_W, B_H)
 btn5 = QPushButton('5')
-btn5.setFixedSize(150, 105)
+btn5.setFixedSize(B_W, B_H)
 btn6 = QPushButton('6')
-btn6.setFixedSize(150, 105)
+btn6.setFixedSize(B_W, B_H)
 btn7 = QPushButton('7')
-btn7.setFixedSize(150, 105)
+btn7.setFixedSize(B_W, B_H)
 btn8 = QPushButton('8')
-btn8.setFixedSize(150, 105)
+btn8.setFixedSize(B_W, B_H)
 btn9 = QPushButton('9')
-btn9.setFixedSize(150, 105)
+btn9.setFixedSize(B_W, B_H)
 btn0 = QPushButton('0')
-btn0.setFixedSize(150, 105)
+btn0.setFixedSize(B_W, B_H)
 
 plus = QPushButton('+')
-plus.setFixedSize(150, 105)
+plus.setFixedSize(B_W, B_H)
 minus = QPushButton('-')
-minus.setFixedSize(150, 105)
+minus.setFixedSize(B_W, B_H)
 mult = QPushButton('*')
-mult.setFixedSize(150, 105)
+mult.setFixedSize(B_W, B_H)
 divide = QPushButton('/')
-divide.setFixedSize(150, 105)
+divide.setFixedSize(B_W, B_H)
 
 equals = QPushButton('=')
-equals.setFixedSize(150, 105)
+equals.setFixedSize(B_W, B_H)
 equals.setObjectName("myButton")
 
 
 delite = QPushButton('←')
-delite.setFixedSize(150, 105)
+delite.setFixedSize(B_W, B_H)
 c_button = QPushButton('C')
-c_button.setFixedSize(150, 105)
+c_button.setFixedSize(B_W, B_H)
 ce_button = QPushButton('CE')
-ce_button.setFixedSize(150, 105)
+ce_button.setFixedSize(B_W, B_H)
 
 btn_comma = QPushButton('.')
-btn_comma.setFixedSize(150, 105)
+btn_comma.setFixedSize(B_W, B_H)
 btn_negative = QPushButton('⁺/₋')
-btn_negative.setFixedSize(150, 105)
+btn_negative.setFixedSize(B_W, B_H)
+
+btn_menu = QPushButton('')
+menu_icon = QIcon('img/menu.png')
+btn_menu.setIcon(menu_icon)
+btn_menu.setIconSize(QSize(40, 40))
+btn_menu.setObjectName("MenuBtn")
+
+menu_type = 'Ordinary'
+
+menu_label = QLabel(menu_type)
+menu_label.setObjectName('MenuLabel')
+
+
+history_b = QPushButton('')
+history_icon = QIcon('img/history.png')
+history_b.setIcon(history_icon)
+history_b.setIconSize(QSize(40, 40))
+history_b.setObjectName("HistoryBtn")
+
+
+
+class ScrollableMenu(QWidget):
+    def __init__(self, width=300, height=400):
+        super().__init__()
+        self.setWindowFlags(Qt.Popup)
+        self.setFixedSize(width, height)
+        self.setStyleSheet("border: none;")
+
+        list_widget = QListWidget()
+        list_widget.setObjectName('list_widget')
+
+        calc_item = QListWidgetItem("Calculator")
+        conv_item = QListWidgetItem("Converter")
+        calc_item.setFlags(calc_item.flags() & ~Qt.ItemIsEnabled)
+        list_widget.addItem(calc_item)
+
+        actions = ['Ordinary']
+        for action_text in actions:
+            item = QListWidgetItem(action_text)
+            list_widget.addItem(item)
+
+        conv_item.setFlags(conv_item.flags() & ~Qt.ItemIsEnabled)
+        list_widget.addItem(conv_item)
+        list_widget.setFocusPolicy(Qt.NoFocus)
+
+
+        def on_selection_changed():
+            global menu_type, menu_label
+            selected_items = list_widget.selectedItems()
+            if selected_items:
+                for item in selected_items:
+                    print("Выбранный элемент:", item.text())
+                    menu_type = item.text()
+                    menu_label.setText(menu_type)
+            else:
+                print("Нет выбранных элементов")
+
+        list_widget.itemSelectionChanged.connect(on_selection_changed)
+
+
+        # Настраиваем скроллбар
+        list_widget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.addWidget(list_widget)
+
+        self.adjustSize()
+
+        
+menu = ScrollableMenu(450, main_win.height() - 80)
+
+
+
 
 buttons = [
     btn0, btn1, btn2, btn3,
@@ -234,8 +309,24 @@ ce_button.clicked.connect(lambda: on_clear('ce', last_txt.text()))
 btn_negative.clicked.connect(on_negative)
 btn_comma.clicked.connect(on_comma)
 
+open = False
+def show_menu():
+    btn_pos = btn_menu.mapToGlobal(btn_menu.rect().bottomLeft())
+    window_pos = main_win.mapToGlobal(main_win.rect().topLeft())
+    x = window_pos.x()
+    y = btn_pos.y() + 15
+
+    menu.move(QPoint(x, y))
+    if open:
+        menu.hide()
+    else:
+        menu.show()
+
+btn_menu.clicked.connect(show_menu)
+
 
 main_layout = QVBoxLayout()
+menu_layout = QHBoxLayout()
 layouth_0 = QHBoxLayout()
 layouth_1 = QHBoxLayout()
 layouth_2 = QHBoxLayout()
@@ -243,6 +334,12 @@ layouth_3 = QHBoxLayout()
 layouth_4 = QHBoxLayout()
 layouth_5 = QHBoxLayout()
 layouth_6 = QHBoxLayout()
+
+
+menu_layout.addWidget(btn_menu)
+menu_layout.addWidget(menu_label)
+menu_layout.addStretch()
+menu_layout.addWidget(history_b)
 
 layouth_0.addWidget(last_txt, alignment=Qt.AlignRight)
 layouth_1.addWidget(main_txt, alignment=Qt.AlignRight)
@@ -272,6 +369,7 @@ layouth_6.addWidget(btn0)
 layouth_6.addWidget(btn_comma)
 layouth_6.addWidget(equals)
 
+main_layout.addLayout(menu_layout)
 main_layout.addStretch()
 main_layout.addLayout(layouth_0)
 main_layout.addLayout(layouth_1)
