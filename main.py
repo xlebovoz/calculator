@@ -16,6 +16,7 @@ W = int(size.width() / 4.6)
 H = int(size.height() / 2.1)
 print(W)
 print(H)
+# main_win.setFixedSize(W, H)
 main_win.setFixedSize(W, H)
 
 print(f"Ширина экрана: {size.width()} пикселей")
@@ -137,8 +138,6 @@ class ScrollableMenu(QWidget):
 menu = ScrollableMenu(int(main_win.width() * 0.65), main_win.height() - 80)
 
 
-
-
 buttons = [
     btn0, btn1, btn2, btn3,
     btn4, btn5, btn6,
@@ -158,12 +157,11 @@ def update_button_sizes():
     window_width = main_win.width()
     window_height = main_win.height()
 
-
     B_W = int(window_width * 0.22)
     B_H = int((window_height * 0.55) / 5)
 
     for btn in buttons:
-        btn.setFixedSize(B_W, B_H)
+        btn.setMinimumSize(B_W, B_H)
 
 update_button_sizes()
 
@@ -201,6 +199,34 @@ def op_click(op):
     last_txt.setText(last_cur_state[1])
 
 def calculate():
+    expression = last_txt.text() + ' ' + main_txt.text()
+    try:
+        result = eval(expression)
+        if isinstance(result, float):
+            # Если число целое (например 9.0), показываем как 9
+            if result.is_integer():
+                result_str = str(int(result))
+            else:
+                # Для чисел с дробной частью — показываем без лишних нулей
+                result_str = str(result)
+        else:
+            result_str = str(result)
+
+        # Ограничение длины результата
+        if len(result_str) > 17:
+            # Можно оставить научную нотацию для очень больших/маленьких чисел
+            scientific_str = "{:.10e}".format(result)
+            if len(scientific_str) <= 17:
+                result_str = scientific_str
+            else:
+                # Можно уменьшить точность или оставить как есть
+                result_str = "{:.5e}".format(result)
+        
+        main_txt.setText(result_str)
+        last_txt.setText('')
+    except Exception:
+        main_txt.setText('Error')
+        last_txt.setText('')
     expression = last_txt.text() + ' ' + main_txt.text()
     try:
         result = eval(expression)
@@ -262,27 +288,27 @@ def on_negative():
      main_txt .setText(new_value) 
 
 def on_comma():
-    
-     global max_len,min_text_size ,main_font,max_text_size
-    
-     cur_text=main_txt.text() 
-    
-     if len(cur_text)>=max_len:
-         return
-    
-     if len(cur_text)>12:
-         if main_font>min_text_size :
-             main_font-=2 
-             font1 .setPointSize(main_font) 
-             main_txt .setFont(font1) 
-    
-     else :
-         
-         main_font=max_text_size 
-         
-         font1 .setPointSize(main_font) 
-    
-         main_txt .setFont(font1) 
+    global max_len, min_text_size, main_font, max_text_size
+    global font1, main_txt
+
+    current_text = main_txt.text()
+
+    new_text = func.comma(current_text)
+
+    main_txt.setText(new_text)
+
+    if len(new_text) >= max_len:
+        return
+
+    if len(new_text) > 12:
+        if main_font > min_text_size:
+            main_font -= 2
+            font1.setPointSize(main_font)
+            main_txt.setFont(font1)
+    else:
+        main_font = max_text_size
+        font1.setPointSize(main_font)
+        main_txt.setFont(font1) 
 
 
 btn1.clicked.connect(lambda: on_number_click(1))
