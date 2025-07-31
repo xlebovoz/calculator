@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QSize, QPoint
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QScrollArea, QListWidgetItem, QListWidget
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont, QIcon, QGuiApplication
 from consts import *
 import func
 
@@ -8,9 +8,18 @@ import func
 app = QApplication([])
 main_win = QWidget()
 main_win.setWindowTitle('calculator')
+screen = QGuiApplication.primaryScreen()
+size = screen.size()
 ICON = QIcon('img/img-title.png')
 main_win.setWindowIcon(ICON)
+W = int(size.width() / 4.6)
+H = int(size.height() / 2.1)
+print(W)
+print(H)
 main_win.setFixedSize(W, H)
+
+print(f"Ширина экрана: {size.width()} пикселей")
+print(f"Высота экрана: {size.height()} пикселей")
 
 
 with open('main.qss', 'r', encoding='utf-8') as f:
@@ -29,51 +38,31 @@ main_txt.setFont(font1)
 last_txt.setFont(font2)
 
 btn1 = QPushButton('1')
-btn1.setFixedSize(B_W, B_H)
 btn2 = QPushButton('2')
-btn2.setFixedSize(B_W, B_H)
 btn3 = QPushButton('3')
-btn3.setFixedSize(B_W, B_H)
 btn4 = QPushButton('4')
-btn4.setFixedSize(B_W, B_H)
 btn5 = QPushButton('5')
-btn5.setFixedSize(B_W, B_H)
 btn6 = QPushButton('6')
-btn6.setFixedSize(B_W, B_H)
 btn7 = QPushButton('7')
-btn7.setFixedSize(B_W, B_H)
 btn8 = QPushButton('8')
-btn8.setFixedSize(B_W, B_H)
 btn9 = QPushButton('9')
-btn9.setFixedSize(B_W, B_H)
 btn0 = QPushButton('0')
-btn0.setFixedSize(B_W, B_H)
 
 plus = QPushButton('+')
-plus.setFixedSize(B_W, B_H)
 minus = QPushButton('-')
-minus.setFixedSize(B_W, B_H)
 mult = QPushButton('*')
-mult.setFixedSize(B_W, B_H)
 divide = QPushButton('/')
-divide.setFixedSize(B_W, B_H)
 
 equals = QPushButton('=')
-equals.setFixedSize(B_W, B_H)
 equals.setObjectName("myButton")
 
 
 delite = QPushButton('←')
-delite.setFixedSize(B_W, B_H)
 c_button = QPushButton('C')
-c_button.setFixedSize(B_W, B_H)
 ce_button = QPushButton('CE')
-ce_button.setFixedSize(B_W, B_H)
 
 btn_comma = QPushButton('.')
-btn_comma.setFixedSize(B_W, B_H)
 btn_negative = QPushButton('⁺/₋')
-btn_negative.setFixedSize(B_W, B_H)
 
 btn_menu = QPushButton('')
 menu_icon = QIcon('img/menu.png')
@@ -145,7 +134,7 @@ class ScrollableMenu(QWidget):
         self.adjustSize()
 
         
-menu = ScrollableMenu(450, main_win.height() - 80)
+menu = ScrollableMenu(int(main_win.width() * 0.65), main_win.height() - 80)
 
 
 
@@ -164,6 +153,19 @@ buttons = [
     btn_comma,
     btn_negative
 ]
+
+def update_button_sizes():
+    window_width = main_win.width()
+    window_height = main_win.height()
+
+
+    B_W = int(window_width * 0.22)
+    B_H = int((window_height * 0.55) / 5)
+
+    for btn in buttons:
+        btn.setFixedSize(B_W, B_H)
+
+update_button_sizes()
 
 for button in buttons:
     shadow_effect = QGraphicsDropShadowEffect()
