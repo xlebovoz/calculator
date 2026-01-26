@@ -3,6 +3,7 @@ This is a small Python project called Calculator
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/)
+[![Unit Tests Status](https://github.com/xefino/goutils/actions/workflows/test.yml/badge.svg)](https://github.com/xefino/goutils/actions)
 
 ## What can he do?
 Currently, the calculator can perform basic mathematical operations on integers, fractions, and exponential numbers
