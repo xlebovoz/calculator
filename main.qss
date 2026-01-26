@@ -52,3 +52,9 @@ QListWidget::item:selected {
 #HistoryBtn {
     background-color: #e8e8e8;
 }
+
+#list_history {
+    background-color: #f0f0f0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}

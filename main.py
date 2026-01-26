@@ -12,25 +12,31 @@ screen = QGuiApplication.primaryScreen()
 size = screen.size()
 ICON = QIcon('img/img-title.png')
 main_win.setWindowIcon(ICON)
-W = int(size.width() / 4.6)
-H = int(size.height() / 2.1)
+
+# size
+W = int(int(size.width()) * 0.2)
+H = int(int(size.height()) * 0.54)
 print(W)
 print(H)
-# main_win.setFixedSize(W, H)
 main_win.setFixedSize(W, H)
 
 print(f"Ширина экрана: {size.width()} пикселей")
 print(f"Высота экрана: {size.height()} пикселей")
 
-
+# add CSS file
 with open('main.qss', 'r', encoding='utf-8') as f:
     style_sheet = f.read()
 
 app.setStyleSheet(style_sheet)
 
+
+# ============================================== ALL ElEMENTS ==============================================
+
+# text
 main_txt = QLabel('0')
 last_txt = QLabel('')
 
+# font
 font1 = QFont()
 font2 = QFont()
 font1.setPointSize(main_font)
@@ -38,6 +44,7 @@ font2.setPointSize(last_font)
 main_txt.setFont(font1)
 last_txt.setFont(font2)
 
+# btn and labels
 btn1 = QPushButton('1')
 btn2 = QPushButton('2')
 btn3 = QPushButton('3')
@@ -84,7 +91,7 @@ history_b.setIconSize(QSize(40, 40))
 history_b.setObjectName("HistoryBtn")
 
 
-
+# side menu
 class ScrollableMenu(QWidget):
     def __init__(self, width=300, height=400):
         super().__init__()
@@ -97,10 +104,12 @@ class ScrollableMenu(QWidget):
 
         calc_item = QListWidgetItem("Calculator")
         conv_item = QListWidgetItem("Converter")
+
         calc_item.setFlags(calc_item.flags() & ~Qt.ItemIsEnabled)
         list_widget.addItem(calc_item)
 
         actions = ['Ordinary']
+
         for action_text in actions:
             item = QListWidgetItem(action_text)
             list_widget.addItem(item)
@@ -108,7 +117,6 @@ class ScrollableMenu(QWidget):
         conv_item.setFlags(conv_item.flags() & ~Qt.ItemIsEnabled)
         list_widget.addItem(conv_item)
         list_widget.setFocusPolicy(Qt.NoFocus)
-
 
         def on_selection_changed():
             global menu_type, menu_label
@@ -123,7 +131,6 @@ class ScrollableMenu(QWidget):
 
         list_widget.itemSelectionChanged.connect(on_selection_changed)
 
-
         # Настраиваем скроллбар
         list_widget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -134,10 +141,48 @@ class ScrollableMenu(QWidget):
 
         self.adjustSize()
 
+
+# chto eto????
+# ++++++++++++++++++++++++++++++++++++++
+
+# class HistoryMenu(QWidget):
+#     def __init__(self, width=300, height=400):
+#         super().__init__()
+#         self.setWindowFlags(Qt.Popup)
+#         self.setFixedSize(width, height)
+#         self.setStyleSheet("border: none;")
+
+#         list_widget = QListWidget()
+#         list_widget.setObjectName('list_history')
+
+#         none_item = QListWidgetItem("None items")
+#         none_item.setFlags(none_item.flags() & ~Qt.ItemIsEnabled)
+#         list_widget.addItem(none_item)
+
+#         # items = []
+
+#         list_widget.setFocusPolicy(Qt.NoFocus)
+
+
+#         # Настраиваем скроллбар
+#         list_widget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+#         list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+#         main_layout = QVBoxLayout(self)
+#         main_layout.setContentsMargins(0, 0, 0, 0)
+#         main_layout.addWidget(list_widget)
+
+#         self.adjustSize()
+
         
 menu = ScrollableMenu(int(main_win.width() * 0.65), main_win.height() - 80)
 
+# need history menu
+# h_menu = HistoryMenu(int(main_win.width() * 0.65), main_win.height() - 80)
 
+
+
+# add styles for btns
 buttons = [
     btn0, btn1, btn2, btn3,
     btn4, btn5, btn6,
@@ -173,6 +218,9 @@ for button in buttons:
     shadow_effect.setColor(Qt.black)
     button.setGraphicsEffect(shadow_effect)
 
+
+# ==========================================================================================================
+# WTF?
 def on_number_click(n):
     global max_len, min_text_size, main_font, max_text_size
 
@@ -197,6 +245,7 @@ def op_click(op):
     last_cur_state = func.move(current_text, last_txt.text(), op)
     main_txt.setText(last_cur_state[0])
     last_txt.setText(last_cur_state[1])
+
 
 def calculate():
     expression = last_txt.text() + ' ' + main_txt.text()
@@ -310,6 +359,9 @@ def on_comma():
         font1.setPointSize(main_font)
         main_txt.setFont(font1) 
 
+# ==========================================================================================================
+
+
 
 btn1.clicked.connect(lambda: on_number_click(1))
 btn2.clicked.connect(lambda: on_number_click(2))
@@ -338,6 +390,8 @@ btn_negative.clicked.connect(on_negative)
 btn_comma.clicked.connect(on_comma)
 
 open = False
+h_open = False
+
 def show_menu():
     btn_pos = btn_menu.mapToGlobal(btn_menu.rect().bottomLeft())
     window_pos = main_win.mapToGlobal(main_win.rect().topLeft())
@@ -345,14 +399,36 @@ def show_menu():
     y = btn_pos.y() + 15
 
     menu.move(QPoint(x, y))
+
     if open:
         menu.hide()
     else:
         menu.show()
 
+# def show_h():
+#     global h_open
+#     btn_pos_global = history_b.mapToGlobal(QPoint(0, 0))
+#     btn_width = history_b.width()
+
+#     # Расчёт позиции: справа от кнопки (по глобальным координатам)
+#     x = btn_pos_global.x() - h_menu.width() + 65
+#     y = btn_pos_global.y() + 55
+
+#     # Перемещаем меню по глобальным координатам
+#     h_menu.move(x, y)
+
+#     # Показываем или скрываем меню
+#     if h_open:
+#         h_menu.hide()
+#         h_open = False
+#     else:
+#         h_menu.show()
+#         h_open = True
+
 btn_menu.clicked.connect(show_menu)
+# history_b.clicked.connect(show_h)
 
-
+# other trash
 main_layout = QVBoxLayout()
 menu_layout = QHBoxLayout()
 layouth_0 = QHBoxLayout()

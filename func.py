@@ -9,7 +9,7 @@ def move(current_text, last_text, op):
     return '0', last_text
 
 def delite_f(current_text):
-    if len(current_text) > 1:
+    if len(current_text) > 1 and current_text != "Error":
         return current_text[:-1]
     else:
         return '0'
