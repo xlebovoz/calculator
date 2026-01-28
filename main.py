@@ -393,17 +393,35 @@ open = False
 h_open = False
 
 def show_menu():
-    btn_pos = btn_menu.mapToGlobal(btn_menu.rect().bottomLeft())
-    window_pos = main_win.mapToGlobal(main_win.rect().topLeft())
+    global open
+    
+    btn_pos = btn_menu.mapToGlobal(QPoint(0, 0))
+    window_pos = main_win.mapToGlobal(QPoint(0, 0))
+    
     x = window_pos.x()
-    y = btn_pos.y() + 15
-
-    menu.move(QPoint(x, y))
-
+    
+    # Вычисляем доступную высоту под кнопкой
+    available_space = (window_pos.y() + main_win.height()) - (btn_pos.y() + btn_menu.height())
+    
+    print(f"Доступное пространство: {available_space}px")
+    print(f"Высота меню: {menu.height()}px")
+    
+    # Если меню В ТОЧНОСТИ помещается или есть небольшой запас
+    if available_space >= menu.height():
+        # Если помещается - показываем под кнопкой
+        y = btn_pos.y() + btn_menu.height()
+    else:
+        # Если не помещается - прижимаем к низу окна
+        y = window_pos.y() + main_win.height() - menu.height()
+    
+    menu.move(QPoint(int(x), int(y)))
+    
     if open:
         menu.hide()
+        open = False
     else:
         menu.show()
+        open = True
 
 # def show_h():
 #     global h_open

@@ -27,6 +27,11 @@ QPushButton:hover {
 
 #MenuBtn {
     background-color: #e8e8e8;
+    padding: 20%;
+}
+
+#MenuBtn:hover {
+    background-color: #d4d4d4;
 }
 
 
