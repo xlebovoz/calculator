@@ -393,7 +393,7 @@ open = False
 h_open = False
 
 def show_menu():
-    global open
+    global open, menu
     
     btn_pos = btn_menu.mapToGlobal(QPoint(0, 0))
     window_pos = main_win.mapToGlobal(QPoint(0, 0))
@@ -404,15 +404,29 @@ def show_menu():
     available_space = (window_pos.y() + main_win.height()) - (btn_pos.y() + btn_menu.height())
     
     print(f"Доступное пространство: {available_space}px")
-    print(f"Высота меню: {menu.height()}px")
+    print(f"Текущая высота меню: {menu.height()}px")
     
-    # Если меню В ТОЧНОСТИ помещается или есть небольшой запас
-    if available_space >= menu.height():
-        # Если помещается - показываем под кнопкой
-        y = btn_pos.y() + btn_menu.height()
-    else:
-        # Если не помещается - прижимаем к низу окна
-        y = window_pos.y() + main_win.height() - menu.height()
+    # Делаем высоту меню равной доступному пространству
+    new_height = available_space  # Без отступа
+    
+    # Минимальная высота для меню
+    if new_height < 150:
+        print("Слишком мало места для меню!")
+        return
+    
+    # Если нужно изменить размер меню (если отличается от текущего)
+    if menu.height() != new_height:
+        print(f"Изменяем высоту меню с {menu.height()}px на {new_height}px")
+        
+        # Закрываем старое меню
+        menu.close()
+        
+        # Создаём новое меню с правильной высотой
+        menu_width = int(main_win.width() * 0.65)
+        menu = ScrollableMenu(menu_width, int(new_height))
+    
+    # Позиция меню - под кнопкой
+    y = btn_pos.y() + btn_menu.height()
     
     menu.move(QPoint(int(x), int(y)))
     
@@ -422,6 +436,7 @@ def show_menu():
     else:
         menu.show()
         open = True
+
 
 # def show_h():
 #     global h_open
